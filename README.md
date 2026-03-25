@@ -26,6 +26,21 @@ data pipeline → modeled dataset → analytics dashboard → executive recommen
 
 ---
 
+## Data Pipeline Architecture
+
+YouTube Data API
+        ↓
+Python Data Pipeline
+(Data Collection + Feature Engineering)
+        ↓
+Analytics Dataset (CSV / Excel)
+        ↓
+Power BI Dashboard
+        ↓
+Creator Performance Insights
+
+---
+
 # Data Source
 
 All data was collected from the **YouTube Data API v3**.
