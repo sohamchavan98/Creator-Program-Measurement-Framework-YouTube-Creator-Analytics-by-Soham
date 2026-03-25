@@ -20,7 +20,7 @@ The partnerships team needs answers to three questions:
 2. Which creators and formats are working?
 3. Where should we allocate creator budget next quarter?
 
-To answer those questions this workspace builds a lightweight measurement system
+To answer those questions, this workspace builds a lightweight measurement system: pull real data from the YouTube API, clean and model it in Python, and report through a 4-page Power BI dashboard.
 
 ---
 
@@ -38,11 +38,14 @@ The API returns public performance metrics for creators and videos without requi
 
 Endpoints used:
 
-| Endpoint      | Data Returned                          |
-| ------------- | -------------------------------------- |
-| channels.list | subscriber counts and channel metadata |
-| search.list   | recent videos per creator              |
-| videos.list   | views, likes, comments, duration       |
+| Endpoint | Data Returned | API Units Used |
+|----------|--------------|----------------|
+| channels.list | subscriber counts and channel metadata | ~8 units (1 per channel) |
+| search.list | recent videos per creator | ~800 units (100 per channel) |
+| videos.list | views, likes, comments, duration | ~5 units (batch calls) |
+
+**Total API units used: ~813 out of 10,000 free daily quota.**
+No billing required. Free tier is sufficient for the full pipeline.
 
 Dataset summary:
 
@@ -89,10 +92,12 @@ Engagement rate
 Like rate
 Comment rate
 
-Formula:
+Formulas:
 
 ```
-Engagement Rate = (likes + comments) / views
+Engagement Rate = (likes + comments) / views × 100
+Like Rate       = likes / views × 100
+Comment Rate    = comments / views × 100
 ```
 
 ---
@@ -110,6 +115,19 @@ Views per day
 Comment rate
 
 These metrics indicate deeper audience interest beyond passive viewing.
+
+---
+
+# Benchmark Thresholds
+
+What counts as "good" vs "bad" — sourced from Influencer Marketing Hub 2024 YouTube Benchmark Report and CreatorIQ 2024 State of Creator Marketing.
+
+| Metric | Below Benchmark | Good | Great | Source |
+|--------|----------------|------|-------|--------|
+| Engagement Rate | < 3.0% | 3.0–5.0% | > 5.0% | Influencer Marketing Hub 2024 |
+| Like Rate | < 2.0% | 2.0–4.0% | > 4.0% | CreatorIQ 2024 |
+| Comment Rate | < 0.05% | 0.05–0.15% | > 0.15% | CreatorIQ 2024 |
+| Views Per Subscriber | < 0.10 | 0.10–0.30 | > 0.30 | Internal benchmark |
 
 ---
 
@@ -291,41 +309,39 @@ YOUTUBE_API_KEY=your_api_key
 Run pipeline:
 
 ```
-python 01_fetch_channels.py
-python 02_fetch_videos.py
-python 03_clean_transform.py
-python 04_export.py
+jupyter notebook creator_data_pipeline.ipynb
 ```
 
-Open Power BI and load:
+Run all cells top to bottom. The notebook covers channel fetch, video fetch, cleaning, feature engineering, and Excel export in sequence.
+
+Open Power BI dashboard:
 
 ```
-hardscope_output/yt_tech_reviewers.xlsx
+File → Open → HardScope_Dashboard.pbix
+```
+
+Or load the raw data manually:
+
+```
+Power BI → Get Data → Excel → hardscope_output/yt_tech_reviewers.xlsx
+Load all 3 sheets: videos, channel_summary, benchmarks
 ```
 
 ---
 
-# Future Improvements
+# What I'd Do With Another Week
 
-With additional time the project would expand to include:
+1. **Paginate the API pull** — use `nextPageToken` to get 200+ videos per channel instead of 50. Unbox Therapy (4 videos) and Arun Maini (6 videos) have unreliable averages right now.
 
-Google Trends search lift data
-cross-platform creator analysis
-conversion tracking via GA4
-automated weekly reporting pipeline
-creator performance monitoring alerts
+2. **Add Google Trends API** — pull branded search interest index to add a real consideration-layer signal. Currently proxied by views_per_sub and views_per_day; search lift would be more defensible.
 
----
+3. **Connect GA4 or Shopify data** — integrate UTM-tagged description link data to close the loop from engagement to site visits and purchases. That turns engagement rate into actual ROAS.
 
-# What This Project Demonstrates
+4. **Add comment sentiment NLP** — classify comments as positive/neutral/negative per creator using a lightweight model. Comment count is a signal; comment tone is a stronger one.
 
-This workspace demonstrates the core skills required for creator program analytics:
+5. **Automate weekly refresh** — schedule the Python notebook to pull the latest 50 videos per channel weekly, overwrite the Excel file, and trigger a Power BI dataset refresh automatically.
 
-data sourcing
-measurement framework design
-analytics modeling
-dashboard reporting
-strategic recommendation development
+6. **Expand to a second platform** — normalize TikTok or Instagram metrics into the same schema for cross-platform creator comparison.
 
 ---
 
