@@ -1,3 +1,5 @@
+![Dashboard Preview](dashboard_preview.png)
+
 # HardScope Creator Program Measurement Workspace
 
 ### YouTube Tech Reviewer Analysis
