@@ -20,24 +20,13 @@ The partnerships team needs answers to three questions:
 2. Which creators and formats are working?
 3. Where should we allocate creator budget next quarter?
 
-To answer those questions this workspace builds a lightweight measurement system:
-
-data pipeline → modeled dataset → analytics dashboard → executive recommendations.
+To answer those questions this workspace builds a lightweight measurement system
 
 ---
 
 ## Data Pipeline Architecture
 
-YouTube Data API
-        ↓
-Python Data Pipeline
-(Data Collection + Feature Engineering)
-        ↓
-Analytics Dataset (CSV / Excel)
-        ↓
-Power BI Dashboard
-        ↓
-Creator Performance Insights
+YouTube Data API → Python Data Pipeline → Analytics Dataset → Power BI Dashboard → Marketing Insights
 
 ---
 
